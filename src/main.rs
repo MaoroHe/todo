@@ -1,10 +1,8 @@
-use struson::reader::{json_path, simple::*};
-use struson::reader::simple::multi_json_path::multi_json_path;
-use struson::writer::simple::*;
 use std::io::{BufReader, Read};
 use std::io;
 use std::fs::File;
-use std::process::exit;
+use struson::reader::simple::*;
+use struson::reader::simple::multi_json_path::multi_json_path;
 
 struct Task {
     id: i32,
@@ -14,54 +12,46 @@ struct Task {
 }
 
 fn main() {
-    loop {
-        let input = command();
+    start();
 
-        let parsed_input: Result<u32, _> = input.trim().parse();
-        match parsed_input {
-            Ok(nombre) => return nombre,
+    loop {
+        let mut input = String::new();
+
+        io::stdin()
+            .read_line(&mut input)
+            .expect("Il y a une erreur avec la valeur que vous essayer d'input.");
+
+        let input: u32 = match input.trim().parse() {
+            Ok(nombre) => nombre,
             Err(_) => {
-                println!("Ce n'est pas un nombre!");
-                continue;
+                println!("Veuillez entrer un nombre entre 1 et 4.");
+                continue
             },
         };
 
-        match parsed_input {
-            1 => {},
-            2 => {},
-            3 => {},
-            4 => {},
-            _ => {},
+        match input {
+            1 => {
+                // fonction read
+            },
+            2 => {
+                // fonction create
+            },
+            3 => {
+                // fonction delete
+            },
+            4 => {
+                println!("Programme en cours d'arrêt...");
+                std::process::exit(0)
+            },
+            _ => {
+                println!("Cette commande n'existe pas!");
+                continue
+            }
         }
     }
-
-    let title = "title";
-
-    println!("title: {}", read(0, &title).unwrap_or_else(|e| {
-        panic!("Error reading title {}", e);
-    }));
 }
 
-fn command() {
-    std::process::Command::new("clear").status().unwrap();
-
-    println!("Salut! Je suis ton assistant dans la vie de tout les jours, ToDo!");
-    println!("Voici une sélection de commande:");
-    println!("1. Afficher l'entièreté de nos tâches.");
-    println!("2. Crée une nouvelle tâche!");
-    println!("3. Supprimer une tâche.");
-    println!("4. Quitter le programme.");
-
-    let mut input = String::new();
-
-    io::stdin()
-        .read_line(&mut input)
-        .expect("Il y a une erreur avec la valeur que vous essayer d'input.");
-
-    input
-}
-
-fn read(index: i32, precision: &str) -> Result<String, std::io::Error> {
+fn read() {
     let mut file = File::open("src/task.json").unwrap();
     let mut result = String::new();
 
@@ -71,7 +61,7 @@ fn read(index: i32, precision: &str) -> Result<String, std::io::Error> {
         panic!("Erreur lors de la lecture du fichier : {:?}", e)
     });
 
-    Ok(item)
+    let json_reader = SimpleJsonReader::new(item.as_bytes());
 }
 
 // std::process::Command::new("clear").status().unwrap();
