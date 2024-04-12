@@ -2,7 +2,9 @@ use struson::reader::{json_path, simple::*};
 use struson::reader::simple::multi_json_path::multi_json_path;
 use struson::writer::simple::*;
 use std::io::{BufReader, Read};
+use std::io;
 use std::fs::File;
+use std::process::exit;
 
 struct Task {
     id: i32,
@@ -13,7 +15,24 @@ struct Task {
 
 fn main() {
     loop {
-        command();
+        let input = command();
+
+        let parsed_input: Result<u32, _> = input.trim().parse();
+        match parsed_input {
+            Ok(nombre) => return nombre,
+            Err(_) => {
+                println!("Ce n'est pas un nombre!");
+                continue;
+            },
+        };
+
+        match parsed_input {
+            1 => {},
+            2 => {},
+            3 => {},
+            4 => {},
+            _ => {},
+        }
     }
 
     let title = "title";
@@ -28,10 +47,18 @@ fn command() {
 
     println!("Salut! Je suis ton assistant dans la vie de tout les jours, ToDo!");
     println!("Voici une sélection de commande:");
-    println!("1. Afficher l'entièreté de nos tâches");
-    println!("2. ");
-    println!();
-    println!();
+    println!("1. Afficher l'entièreté de nos tâches.");
+    println!("2. Crée une nouvelle tâche!");
+    println!("3. Supprimer une tâche.");
+    println!("4. Quitter le programme.");
+
+    let mut input = String::new();
+
+    io::stdin()
+        .read_line(&mut input)
+        .expect("Il y a une erreur avec la valeur que vous essayer d'input.");
+
+    input
 }
 
 fn read(index: i32, precision: &str) -> Result<String, std::io::Error> {
